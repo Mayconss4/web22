@@ -24,29 +24,34 @@ class Crud
         }
         return $lista;
       } else {
-        echo "Nenhum registro encontrado!";
-        return false;
+        $this->message =  "Nenhum registro encontrado!";
+        $this->error = true;
       }
     } catch (Exception $e) {
-      $this->message = $e->getMessage();
+      $this->message =  $e->getMessage();
       $this->error = true;
     }
   }
   public function insert($campos = NULL, $valores = NULL)
   {
-    if (!$campos && !$valores) {
-      echo "Campos e valores não informados!";
-      return false;
+    if (!$campos || !$valores) {
+      $this->message = "Campos e valores não informados!";
+      $this->error = true;
     } else {
-      $conexao = Transaction::get();
-      $sql = "INSERT INTO $this->tabela ($campos) VALUES ($valores)";
-      $resultado = $conexao->query($sql);
-      if ($resultado->rowCount() > 0) {
-        echo "Inserido com sucesso!";
-        return true;
-      } else {
-        echo "Erro ao inserir!";
-        return false;
+      try {
+        $conexao = Transaction::get();
+        $sql = "INSERT INTO $this->tabela ($campos) VALUES ($valores)";
+        $resultado = $conexao->query($sql);
+        if ($resultado->rowCount() > 0) {
+          $this->message = "Inserido com sucesso!";
+          $this->error = false;
+        } else {
+          $this->message =  "Nenhum registro inserido!";
+          $this->error =  true;
+        }
+      } catch (Exception $e) {
+        $this->message =  $e->getMessage();
+        $this->error = true;
       }
     }
   }
@@ -64,11 +69,11 @@ class Crud
           $this->message = "Atualizado com sucesso!";
           $this->error = false;
         } else {
-          $this->message = "Erro ao atualizar!";
+          $this->message = "Nenhum registro atualizado!";
           $this->error = true;
         }
       } catch (Exception $e) {
-        $this->message = $e->getMessage();
+        $this->message =  $e->getMessage();
         $this->error = true;
       }
     }
@@ -84,14 +89,14 @@ class Crud
         $sql = "DELETE FROM $this->tabela WHERE $condicao";
         $resultado = $conexao->query($sql);
         if ($resultado->rowCount() > 0) {
-          $this->message =  "Excluído com sucesso!";
+          $this->message = "Registro excluído com sucesso!";
           $this->error = false;
         } else {
-          $this->message =  "Erro ao excluir!";
+          $this->message = "Nenhum registro excluído!";
           $this->error = true;
         }
       } catch (Exception $e) {
-        $this->message = $e->getMessage();
+        $this->message =  $e->getMessage();
         $this->error = true;
       }
     }

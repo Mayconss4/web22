@@ -22,20 +22,21 @@ class Cadastrar
                 $senha = $conexao->quote(sha1($_POST["senha"]));
                 $crud = new Crud("usuario");
                 $crud->insert(
-                    "nome,email,senha",
+                    "nome, email, senha",
                     "{$nome}, {$email}, {$senha}"
                 );
                 $this->message = $crud->getMessage();
-                $this->error = $crud->getError();
-            }   catch (Exception $e) {
+                $this->error = $crud->getError();                
+            } catch (Exception $e) {
                 $this->message = "Ocorreu um erro!" . $e->getMessage();
                 $this->error = TRUE;
             }
         } else {
-            $this->message = "Preencha todos os campos! ";
+            $this->message = "Preencha todos os campos!";
             $this->error = TRUE;
         }
     }
+
     public function getMessage()
     {
         if (is_string($this->error)) {
@@ -45,17 +46,20 @@ class Cadastrar
             if ($this->error) {
                 $msg->set("cor", "danger");
             } else {
-                $msg->set("cor", "sucess");
+                $msg->set("cor", "success");
             }
             $msg->set("msg", $this->message);
-            $msg->set("uri", "mayconWeb/?class=Login");
+            $msg->set("uri", "/mayconWeb/?class=Login");
             return $msg->saida();
         }
     }
-    public function getError(){
+    public function getError()
+    {
         return $this->error;
     }
-    public function __destruct(){
+    public function __destruct()
+    {
         Transaction::close();
     }
+
 }

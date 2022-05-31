@@ -10,20 +10,20 @@ class Tabela
   public function controller()
   {
     try {
-    Transaction::get();
-    $livro = new Crud("livro");
-    $resultado = $livro->select();
-    $tabela = new Template("view/tabela.html");
-    if (is_array($resultado)) {
-      $tabela->set("linha", $resultado);
-      $this->message = $tabela->saida();
-    } else {
-      $this->message = $livros->getMessage();
-      $this->error = $livros->getError();
-    }
-  } catch (Exception $e) {
-    $this->message = $e->getMessage();
-    $this->error = true;
+      Transaction::get();
+      $livro = new Crud("livro");
+      $resultado = $livro->select();
+      $tabela = new Template("restrict/view/tabela.html");
+      if (is_array($resultado)) {
+        $tabela->set("linha", $resultado);
+        $this->message = $tabela->saida();
+      } else {
+        $this->message = $livro->getMessage();
+        $this->error = $livro->getError();
+      }
+    } catch (Exception $e) {
+      $this->message = $e->getMessage();
+      $this->error = true;
     }
   }
   public function remover()
@@ -33,12 +33,12 @@ class Tabela
         $conexao = Transaction::get();
         $id = $conexao->quote($_GET["id"]);
         $livro = new Crud("livro");
-        $livro->delete("id=$id");
+        $livro->delete("id = $id");
         $this->message = $livro->getMessage();
         $this->error = $livro->getError();
       } catch (Exception $e) {
-        $this->message =  $e->getMessage();
-        $tihs->error = true;
+        $this->message = $e->getMessage();
+        $this->error = true;
       }
     } else {
       $this->message = "Faltando parâmetro!";
@@ -50,7 +50,7 @@ class Tabela
     if (is_string($this->error)) {
       return $this->message;
     } else {
-      $msg = new Template("view/msg.html");
+      $msg = new Template("shared/view/msg.html");
       if ($this->error) {
         $msg->set("cor", "danger");
       } else {
