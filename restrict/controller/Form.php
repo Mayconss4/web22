@@ -18,24 +18,18 @@ class Form
   }
   public function salvar()
   {
-    if (isset($_POST["titulo"]) && isset($_POST["autor"]) && isset($_POST["resenha"])) {
+    if (isset($_POST['titulo']) && isset($_POST['autor']) && isset($_POST['resenha'])) {
       try {
         $conexao = Transaction::get();
-        $livro = new Crud("livro");
-        $titulo = $conexao->quote($_POST["titulo"]);
-        $autor = $conexao->quote($_POST["autor"]);
-        $resenha = $conexao->quote($_POST["resenha"]);
+        $livro = new Crud('livro');
+        $titulo = $conexao->quote($_POST['titulo']);
+        $autor = $conexao->quote($_POST['autor']);
+        $resenha = $conexao->quote($_POST['resenha']);
         if (empty($_POST["id"])) {
-          $livro->insert(
-            "titulo, autor, resenha",
-            "$titulo, $autor, $resenha"
-          );
+          $livro->insert("titulo,autor,resenha", "$titulo,$autor,$resenha");
         } else {
-          $id = $conexao->quote($_POST["id"]);
-          $livro->update(
-            "titulo = $titulo, autor = $autor, resenha = $resenha",
-            "id = $id"
-          );
+          $id = $conexao->quote($_POST['id']);
+          $livro->update("titulo=$titulo,autor=$autor,resenha=$resenha", "id=$id");
         }
         $this->message = $livro->getMessage();
         $this->error = $livro->getError();
@@ -43,32 +37,31 @@ class Form
         $this->message = $e->getMessage();
         $this->error = true;
       }
-    } else {
-      $this->message = "Campos não informados!";
-      $this->error = true;
     }
   }
   public function editar()
   {
-    if (isset($_GET["id"])) {
+    if (isset($_GET['id'])) {
       try {
         $conexao = Transaction::get();
-        $id = $conexao->quote($_GET["id"]);
-        $livro = new Crud("livro");
-        $resultado = $livro->select("*", "id = $id");
+        $id = $conexao->quote($_GET['id']);
+        $livro = new Crud('livro');
+        $resultado = $livro->select("*", "id=$id");
+        $form = new Template("view/form.html");
         if (!$livro->getError()) {
           $form = new Template("view/form.html");
-          foreach ($resultado[0] as $cod => $resenha) {
-            $form->set($cod, $resenha);
-          }
-          $this->message = $form->saida();
-        } else {
-          $this->message = $livro->getMessage();
-          $this->error = true;
+          foreach ($resultado[0] as $cod => $valor) {
+            $form->set($cod, $valor);
         }
-      } catch (Exception $e) {
-        $this->message = $e->getMessage();
+        $this->message = $form->saida();
+      } else{
+        $this->message = $livro->getMessage();
         $this->error = true;
+      }
+      
+    } catch (Exception $e) {
+      $this->message = $e->getMessage();
+      $this->error = true;
       }
     }
   }

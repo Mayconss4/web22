@@ -1,30 +1,16 @@
-<form method="post" action="?class=Form&method=salvar">
+<form method="POST" action="?class=Form&method=salvar">
   <input type="hidden" name="id" value="{id}" />
   <div>
-    <label for="titulo">Titulo:</label>
-    <input
-      type="text"
-      name="titulo"
-      id="titulo"
-      required
-      maxlength="50"
-      value="{titulo}"
-    />
+    <label for="titulo">Titulo: </label>
+    <input type="text" name="titulo" id="titulo" required value="{titulo}" />
   </div>
   <div>
-    <label for="autor">Autor:</label>
+    <label for="autor">Autor: </label>
     <textarea name="autor" id="autor" required>{autor}</textarea>
   </div>
   <div>
-    <label for="resenha">Resenha:</label>
-    <input
-      type="text"
-      name="resenha"
-      id="resenha"
-      required
-      maxlength="50"
-      value="{resenha}"
-    />
+    <label for="resenha"> Resenha: </label>
+    <input type="text" name="resenha" id="resenha" required value="{resenha}" />
   </div>
   <div>
     <button type="submit">Salvar</button>

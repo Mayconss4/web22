@@ -1,58 +1,59 @@
 <?php
-// auto load
+// AutoLoad
 spl_autoload_extensions('.php');
 function classLoader($class)
 {
-  $nomeArquivo = $class . ".php";
-  $astas = array (
+  $nomeArquivo = $class . '.php';
+  $pastas = array(
     "shared/controller",
     "shared/model",
-    "public/controller",
-    "public/model"
+    "restrict/controller",
+    "restrict/model"
   );
-  foreach ($pastas as $pasta){
+  foreach ($pastas as $pasta) {
     $arquivo = "{$pasta}/{$nomeArquivo}";
-    if(file_exists($arquivo)){
-      require_once $arquivo;
+    if (file_exists($arquivo)) {
+      require_once($arquivo);
     }
   }
 }
-spl_autoload_register("classLoader");
+spl_autoload_register('classLoader');
 
 Session::startSession();
-if(!Session::getValue("id")){
-  header("Location:" . Aplicacao::$path . "/");
+if (!Session::getValue("id")) {
+    header("Location:" . Aplicacao::$path . "/");
 }
-//Front Controller
+
+// FrontController
 class Aplicacao
 {
-  static private $app = "/modelo";
-  static private $uri = "/modelo/restrita.php";
-  static public function run()
+  static public $path = "/mayconWeb";
+  static private $uri = "/mayconWeb/restrita.php";
+  public static function run()
   {
-    $layout = new Template("restrict/view/layout.html");
-    $layout->set ("uri", self::$app);
-    $layout->set ("path", self::$path);
-    if(isset($_GET["class"])){
+    $layout = new Template('restrict/view/layout.html');
+    $layout->set("uri", self::$uri);
+    $layout->set("path", self::$path);
+    if (isset($_GET["class"])) {
       $class = $_GET["class"];
-    }else{
+    } else {
       $class = "Inicio";
     }
-    if(isset($_GET["method"])){
-      $class = $_GET["method"];
-    }else{
-      $method="";
+    if (isset($_GET["method"])) {
+      $method = $_GET["method"];
+    } else {
+      $method = "";
     }
-    if(class_exists($class)){
-      $pagina = new $class;
-      if(method_exists($pagina, $method)){
+    if (class_exists($class)) {
+      $pagina = new $class();
+      if (method_exists($pagina, $method)) {
         $pagina->$method();
-      }else{
+      } else {
         $pagina->controller();
       }
-    $layout->set("conteudo",$pagina->getMessage());
+      $layout->set('conteudo', $pagina->getMessage());
     }
-    $layout->set("nome",Session::getValue("nome"));
+    $layout->set("nome", Session::getValue("nome"));
     echo $layout->saida();
   }
 }
